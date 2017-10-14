@@ -1,8 +1,8 @@
-package WonderUtil;
+package com.wondersaga.wondertoolkit;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -22,11 +22,11 @@ public class WonderWebView extends WebView {
 
     public class JavaScriptInterface {
 
-        Context mContext;
+        Context context;
 
         // Instantiate the interface and set the context
         JavaScriptInterface(Context c) {
-            mContext = c;
+            context = c;
         }
 
         @JavascriptInterface
@@ -36,11 +36,17 @@ public class WonderWebView extends WebView {
         }
 
         @JavascriptInterface
-        public void onEvent(String evt) {
+        public void onEvent(final String evt) {
 
             WonderLog.logDebug(TAG, evt);
 
-            wonderEvent.dispatch(evt);
+            WonderUIUtil.getInstance().runOnUIThread(context, new Runnable() {
+                @Override
+                public void run() {
+
+                    wonderEvent.dispatch(evt);
+                }
+            });
         }
     }
 
